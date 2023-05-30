@@ -1,19 +1,22 @@
 package com.illiouchine.mybook.feature
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.illiouchine.mybook.feature.datagateway.BookDataGateway
 import javax.inject.Inject
 
 class PerformSearchUseCaseImpl @Inject constructor(
-
+    private val bookDataGateway: BookDataGateway
 ): PerformSearchUseCase {
 
-    override fun invoke(author: String, title: String): Flow<PerformSearchUseCase.SearchResult> {
-        return flow {
-            emit(PerformSearchUseCase.SearchResult.Error)
+    override suspend fun invoke(author: String, title: String): PerformSearchUseCase.SearchResult {
+        val result = bookDataGateway.getBookByAuthorAndTitle(author = author, title= title)
+        return if (result.isEmpty()){
+            PerformSearchUseCase.SearchResult.Error
+        } else {
+            PerformSearchUseCase.SearchResult.Result(
+                books = result
+            )
         }
     }
-
 }
 
 
