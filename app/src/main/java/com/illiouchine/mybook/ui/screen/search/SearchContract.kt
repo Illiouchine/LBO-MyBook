@@ -1,4 +1,4 @@
-package com.illiouchine.mybook.ui.screen
+package com.illiouchine.mybook.ui.screen.search
 
 import com.illiouchine.mvi.core.*
 import com.illiouchine.mybook.feature.datagateway.entities.BookEntity

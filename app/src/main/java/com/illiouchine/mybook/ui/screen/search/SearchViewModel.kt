@@ -1,4 +1,4 @@
-package com.illiouchine.mybook.ui.screen
+package com.illiouchine.mybook.ui.screen.search
 
 import androidx.lifecycle.viewModelScope
 import com.illiouchine.mvi.core.MviViewModel
@@ -7,10 +7,10 @@ import com.illiouchine.mybook.feature.PerformSearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.illiouchine.mybook.ui.screen.SearchContract.SearchAction as Action
-import com.illiouchine.mybook.ui.screen.SearchContract.SearchIntent as Intent
-import com.illiouchine.mybook.ui.screen.SearchContract.SearchPartialState as PartialState
-import com.illiouchine.mybook.ui.screen.SearchContract.SearchState as State
+import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchAction as Action
+import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchIntent as Intent
+import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchPartialState as PartialState
+import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchState as State
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(

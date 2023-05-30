@@ -11,9 +11,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.illiouchine.mybook.ui.screen.SearchScreen
-import com.illiouchine.mybook.ui.screen.SearchViewModel
-import com.illiouchine.mybook.ui.screen.SearchContract.SearchIntent as Intent
+import com.illiouchine.mybook.ui.screen.search.SearchScreen
+import com.illiouchine.mybook.ui.screen.search.SearchViewModel
+import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchIntent as Intent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview

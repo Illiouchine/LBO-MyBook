@@ -1,4 +1,4 @@
-package com.illiouchine.mybook.ui.screen
+package com.illiouchine.mybook.ui.screen.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.illiouchine.mybook.feature.datagateway.entities.BookEntity
-import com.illiouchine.mybook.ui.screen.SearchContract.SearchState as State
+import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchState as State
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
