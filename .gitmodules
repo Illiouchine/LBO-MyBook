@@ -1,0 +1,3 @@
+[submodule "mvi-library"]
+	path = mvi-library
+	url = git@github.com:Illiouchine/mvi-library.git
