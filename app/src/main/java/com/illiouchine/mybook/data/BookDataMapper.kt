@@ -1,16 +1,21 @@
 package com.illiouchine.mybook.data
 
+import com.illiouchine.mybook.data.datasource.BookLocalDataSource
 import com.illiouchine.mybook.data.datasource.BookRemoteDataSource
 import com.illiouchine.mybook.feature.datagateway.BookDataGateway
 import com.illiouchine.mybook.feature.datagateway.entities.BookEntity
 import javax.inject.Inject
 
 class BookDataMapper @Inject constructor(
-    private val bookRemoteDataSource: BookRemoteDataSource
+    private val bookRemoteDataSource: BookRemoteDataSource,
+    private val bookLocalDataSource: BookLocalDataSource
 ): BookDataGateway {
 
     override suspend fun getBookByAuthorAndTitle(author: String, title: String): List<BookEntity> {
-        return bookRemoteDataSource.searchBook(author = author, title = title).toBookEntity()
+        val bookEntityList =
+            bookRemoteDataSource.searchBook(author = author, title = title).toBookEntity()
+        bookLocalDataSource.saveSearchResult(bookList = bookEntityList, author = author, title = title)
+        return bookEntityList
     }
 
     private fun BookRemoteDataSource.BookResult.toBookEntity() : List<BookEntity> {

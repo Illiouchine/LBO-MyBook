@@ -2,6 +2,8 @@ package com.illiouchine.mybook.di
 
 import com.google.gson.GsonBuilder
 import com.illiouchine.mybook.data.BookDataMapper
+import com.illiouchine.mybook.data.datasource.BookLocalDataSource
+import com.illiouchine.mybook.data.datasource.BookLocalDataSourceInMemory
 import com.illiouchine.mybook.data.datasource.BookRemoteDataSource
 import com.illiouchine.mybook.feature.PerformSearchUseCase
 import com.illiouchine.mybook.feature.PerformSearchUseCaseImpl
@@ -26,6 +28,25 @@ class UseCaseModule {
     ): PerformSearchUseCase {
         return PerformSearchUseCaseImpl(bookDataMapper)
     }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+class BookDataModule {
+    @Singleton
+    @Provides
+    fun provideBookDataMapper(
+        bookRemoteDataSource: BookRemoteDataSource,
+        bookLocalDataSource: BookLocalDataSource
+    ): BookDataMapper {
+        return BookDataMapper(
+            bookRemoteDataSource, bookLocalDataSource
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideBookLocalDataSource(): BookLocalDataSource = BookLocalDataSourceInMemory()
 }
 
 @Module
