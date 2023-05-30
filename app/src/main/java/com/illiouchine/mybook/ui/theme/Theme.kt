@@ -1,4 +1,4 @@
-package com.example.mybook.ui.theme
+package com.illiouchine.mybook.ui.theme
 
 import android.app.Activity
 import android.os.Build

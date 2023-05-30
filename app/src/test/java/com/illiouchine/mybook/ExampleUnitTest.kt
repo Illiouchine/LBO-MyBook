@@ -1,4 +1,4 @@
-package com.example.mybook
+package com.illiouchine.mybook
 
 import org.junit.Test
 

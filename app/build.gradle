@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    namespace 'com.example.mybook'
+    namespace 'com.illiouchine.mybook'
     compileSdk 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.mybook"
+        applicationId "com.illiouchine.mybook"
         minSdk 25
         targetSdk 33
         versionCode 1
