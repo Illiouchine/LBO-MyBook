@@ -2,6 +2,7 @@ package com.illiouchine.mybook.ui.screen.result
 
 import com.illiouchine.mvi.core.*
 import com.illiouchine.mybook.feature.datagateway.entities.BookEntity
+import com.illiouchine.mybook.feature.datagateway.entities.BookWithLikedEntity
 
 interface ResultContract {
 
@@ -21,7 +22,7 @@ interface ResultContract {
     ) : UiState {
         sealed class SearchResult {
             data class Loadded(
-                val bookList: List<BookEntity>,
+                val bookList: List<BookWithLikedEntity>,
                 val author: String,
                 val title: String
             ) : SearchResult()
@@ -30,14 +31,16 @@ interface ResultContract {
         }
 
         sealed class ResultEvent : UiEvent {
-            object GoToBookDetail : ResultEvent()
+            data class GoToBookDetail(
+                val bookEntity: BookEntity
+            ) : ResultEvent()
         }
     }
 
     sealed class ResultPartialState : UiPartialState {
         object Loading : ResultPartialState()
         data class Loadded(
-            val bookList: List<BookEntity>,
+            val bookList: List<BookWithLikedEntity>,
             val author: String,
             val title: String
         ) : ResultPartialState()

@@ -5,6 +5,8 @@ import com.illiouchine.mybook.data.BookDataMapper
 import com.illiouchine.mybook.data.datasource.BookLocalDataSource
 import com.illiouchine.mybook.data.datasource.BookLocalDataSourceInMemory
 import com.illiouchine.mybook.data.datasource.BookRemoteDataSource
+import com.illiouchine.mybook.feature.GetSearchUseCase
+import com.illiouchine.mybook.feature.GetSearchUseCaseImpl
 import com.illiouchine.mybook.feature.PerformSearchUseCase
 import com.illiouchine.mybook.feature.PerformSearchUseCaseImpl
 import dagger.Module
@@ -20,6 +22,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class UseCaseModule {
+
+    @Singleton
+    @Provides
+    fun provideGetSearchUseCase(
+        bookDataMapper: BookDataMapper
+    ): GetSearchUseCase {
+        return GetSearchUseCaseImpl(bookDataMapper)
+    }
 
     @Singleton
     @Provides

@@ -11,6 +11,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.illiouchine.mybook.ui.screen.result.ResultScreen
+import com.illiouchine.mybook.ui.screen.result.ResultViewModel
 import com.illiouchine.mybook.ui.screen.search.SearchScreen
 import com.illiouchine.mybook.ui.screen.search.SearchViewModel
 import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchIntent as Intent
@@ -62,7 +64,13 @@ fun MainScreen() {
                     Text("MyLib")
                 }
                 composable("searchResult"){
-                    Text("searchResult")
+                    val resultViewModel = hiltViewModel<ResultViewModel>()
+                    val resultState by resultViewModel.uiState.collectAsState()
+                    ResultScreen(
+                        resultState = resultState,
+                        onEventHandled = {},
+                        onNavigateToBookDetail = {}
+                    )
                 }
             }
         }

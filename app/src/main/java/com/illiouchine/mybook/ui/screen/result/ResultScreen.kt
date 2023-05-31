@@ -18,9 +18,9 @@ fun ResultScreen(
     onNavigateToBookDetail: () -> Unit = {},
 ) {
     when (resultState.event) {
-        ResultContract.ResultState.ResultEvent.GoToBookDetail -> {
+        is ResultContract.ResultState.ResultEvent.GoToBookDetail -> {
             onEventHandled()
-            onNavigateToBookDetail()
+            onNavigateToBookDetail() // Todo pass book detail to nav arg
         }
     }
 

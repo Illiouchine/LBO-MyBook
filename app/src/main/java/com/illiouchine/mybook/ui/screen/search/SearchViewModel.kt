@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.illiouchine.mvi.core.MviViewModel
 import com.illiouchine.mvi.core.Reducer
 import com.illiouchine.mybook.feature.PerformSearchUseCase
+import com.illiouchine.mybook.feature.datagateway.entities.SearchResultEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -78,11 +79,11 @@ class SearchViewModel @Inject constructor(
                 setPartialState { PartialState.Loading }
                 viewModelScope.launch {
                     when(val result = performSearchUseCase(author = action.author,title = action.title)){
-                        PerformSearchUseCase.SearchResult.Error -> {
+                        SearchResultEntity.Error -> {
                             setPartialState { PartialState.Idle }
                             // TODO Manage feedback on error
                         }
-                        is PerformSearchUseCase.SearchResult.Result -> {
+                        is SearchResultEntity.Result -> {
                             setPartialState { PartialState.GoToBookList(bookList = result.books) }
                         }
                     }
