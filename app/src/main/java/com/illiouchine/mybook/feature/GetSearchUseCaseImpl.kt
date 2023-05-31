@@ -15,20 +15,29 @@ class GetSearchUseCaseImpl @Inject constructor(
         val searchResult = gateway.getSearchResult()
         val likedBook = gateway.getLikedBook()
 
-        val searchResultWithLiked = searchResult.list.map { searchedBook ->
+        val searchResultWithLiked = searchResult?.list?.map { searchedBook ->
             BookWithLikedEntity(
+                etag = searchedBook.etag,
                 title = searchedBook.title,
                 author = searchedBook.author,
                 description = searchedBook.description,
                 imageUrl = searchedBook.imageUrl,
-                liked = likedBook.contains(BookEntity(searchedBook.title, author = searchedBook.author, description = searchedBook.description, imageUrl = searchedBook.imageUrl))
+                liked = likedBook.contains(
+                    BookEntity(
+                        etag = searchedBook.etag,
+                        title = searchedBook.title,
+                        author = searchedBook.author,
+                        description = searchedBook.description,
+                        imageUrl = searchedBook.imageUrl
+                    )
+                )
             )
         }
 
         return SearchResultWithLikedBookEntity(
-            author = searchResult.author,
-            title = searchResult.title,
-            list = searchResultWithLiked
+            author = searchResult?.author ?: "",
+            title = searchResult?.title ?: "",
+            list = searchResultWithLiked ?: emptyList()
         )
     }
 }

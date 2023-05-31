@@ -5,7 +5,7 @@ import com.illiouchine.mybook.feature.datagateway.entities.SearchResultExtendedE
 
 interface BookDataGateway {
     suspend fun getBookByAuthorAndTitle(author: String, title: String) : List<BookEntity>
-    suspend fun getSearchResult(): SearchResultExtendedEntity
+    suspend fun getSearchResult(): SearchResultExtendedEntity?
     suspend fun getLikedBook(): List<BookEntity>
 }
 

@@ -3,6 +3,7 @@ package com.illiouchine.mybook.ui.screen.search
 import androidx.lifecycle.viewModelScope
 import com.illiouchine.mvi.core.MviViewModel
 import com.illiouchine.mvi.core.Reducer
+import com.illiouchine.mybook.feature.GetSearchUseCase
 import com.illiouchine.mybook.feature.PerformSearchUseCase
 import com.illiouchine.mybook.feature.datagateway.entities.SearchResultEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,14 +16,28 @@ import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchState as Sta
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val performSearchUseCase: PerformSearchUseCase
+    private val performSearchUseCase: PerformSearchUseCase,
+    private val getSearchUseCase: GetSearchUseCase,
 ) : MviViewModel<Intent, Action, PartialState, State>() {
+
+    init {
+        viewModelScope.launch {
+            val lastSearch = getSearchUseCase()
+            setPartialState {
+                PartialState.IdleWithPreviousSearch(
+                    author = lastSearch.author,
+                    title = lastSearch.title
+                )
+            }
+        }
+    }
+
 
     override fun createInitialState(): State =
         State(searchProgress = State.SearchProgress.Idle, event = null)
 
     override fun handleUserIntent(intent: Intent): Action {
-        return when (intent){
+        return when (intent) {
             Intent.MyLibraryClicked -> Action.GoToMyLibrary
             is Intent.Search -> Action.PerformSearch(author = intent.author, title = intent.title)
             Intent.EventHandled -> Action.ClearEvent
@@ -35,10 +50,13 @@ class SearchViewModel @Inject constructor(
                 currentState: SearchContract.SearchState,
                 partialState: SearchContract.SearchPartialState
             ): SearchContract.SearchState {
-                return when (partialState){
+                return when (partialState) {
                     is SearchContract.SearchPartialState.GoToBookList -> {
                         currentState.copy(
-                            searchProgress = State.SearchProgress.Idle,
+                            searchProgress = State.SearchProgress.IdleWithPreviousSearch(
+                                author = partialState.author,
+                                title = partialState.title,
+                            ),
                             event = State.SearchEvent.GoToSearchResult(bookList = partialState.bookList)
                         )
                     }
@@ -50,6 +68,15 @@ class SearchViewModel @Inject constructor(
                     SearchContract.SearchPartialState.Idle -> {
                         currentState.copy(
                             searchProgress = State.SearchProgress.Idle
+                        )
+                    }
+                    is SearchContract.SearchPartialState.IdleWithPreviousSearch -> {
+                        currentState.copy(
+                            searchProgress = State.SearchProgress.IdleWithPreviousSearch(
+                                partialState.author,
+                                partialState.title,
+                                partialState.error
+                            )
                         )
                     }
                     SearchContract.SearchPartialState.Loading -> {
@@ -69,7 +96,7 @@ class SearchViewModel @Inject constructor(
 
 
     override suspend fun handleAction(action: SearchContract.SearchAction) {
-        when(action){
+        when (action) {
             SearchContract.SearchAction.GoToMyLibrary -> {
                 setPartialState {
                     PartialState.GoToMyLibrary
@@ -78,13 +105,26 @@ class SearchViewModel @Inject constructor(
             is SearchContract.SearchAction.PerformSearch -> {
                 setPartialState { PartialState.Loading }
                 viewModelScope.launch {
-                    when(val result = performSearchUseCase(author = action.author,title = action.title)){
+                    when (val result =
+                        performSearchUseCase(author = action.author, title = action.title)) {
                         SearchResultEntity.Error -> {
-                            setPartialState { PartialState.Idle }
-                            // TODO Manage feedback on error
+                            setPartialState {
+                                PartialState.IdleWithPreviousSearch(
+                                    author = action.author,
+                                    title = action.title,
+                                    error = "An error occurred"
+                                )
+                            }
+                            // todo : Manage error properly
                         }
                         is SearchResultEntity.Result -> {
-                            setPartialState { PartialState.GoToBookList(bookList = result.books) }
+                            setPartialState {
+                                PartialState.GoToBookList(
+                                    bookList = result.books,
+                                    author = action.author,
+                                    title = action.title
+                                )
+                            }
                         }
                     }
                 }

@@ -22,7 +22,12 @@ interface SearchContract {
         override val event: UiEvent?,
     ) : UiState {
         sealed class SearchProgress {
-            object Idle : SearchProgress()
+            object Idle: SearchProgress()
+            data class IdleWithPreviousSearch(
+                val author: String,
+                val title: String,
+                val error: String? = null,
+            ) : SearchProgress()
             object Loading : SearchProgress()
         }
         sealed class SearchEvent : UiEvent {
@@ -34,7 +39,16 @@ interface SearchContract {
     sealed class SearchPartialState : UiPartialState {
         object Loading : SearchPartialState()
         object Idle : SearchPartialState()
-        data class GoToBookList(val bookList: List<BookEntity>) : SearchPartialState()
+        data class IdleWithPreviousSearch(
+            val author: String,
+            val title: String,
+            val error: String? = null,
+        ) : SearchPartialState()
+        data class GoToBookList(
+            val author: String,
+            val title: String,
+            val bookList: List<BookEntity>
+            ) : SearchPartialState()
         object GoToMyLibrary : SearchPartialState()
         object ClearEvent : SearchPartialState()
     }

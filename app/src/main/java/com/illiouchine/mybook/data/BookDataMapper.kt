@@ -1,6 +1,8 @@
 package com.illiouchine.mybook.data
 
-import com.illiouchine.mybook.data.dataobject.SearchResultDataObject
+import com.illiouchine.mybook.data.dataobject.BookDataObject
+import com.illiouchine.mybook.data.dataobject.LastAuthorAndTitle
+import com.illiouchine.mybook.data.dataobject.LikedBookDataObject
 import com.illiouchine.mybook.data.datasource.BookLocalDataSource
 import com.illiouchine.mybook.data.datasource.BookRemoteDataSource
 import com.illiouchine.mybook.feature.datagateway.BookDataGateway
@@ -14,40 +16,92 @@ class BookDataMapper @Inject constructor(
 ): BookDataGateway {
 
     override suspend fun getBookByAuthorAndTitle(author: String, title: String): List<BookEntity> {
-        val bookEntityList =
-            bookRemoteDataSource.searchBook(author = author, title = title).toBookEntity()
-        bookLocalDataSource.saveSearchResult(bookList = bookEntityList, author = author, title = title)
-        return bookEntityList
+        val bookEntityList = bookRemoteDataSource.searchBook(author = author, title = title)
+        bookLocalDataSource.dropLastAuthorAndTitle()
+        bookLocalDataSource.dropLastSearchResult()
+        bookLocalDataSource.saveSearchResult(bookList = bookEntityList.toBookDataObject())
+        bookLocalDataSource.saveLastAuthorAndTitle(LastAuthorAndTitle(author, title))
+        return bookEntityList.toBookEntity()
     }
 
-    override suspend fun getSearchResult(): SearchResultExtendedEntity {
-        return bookLocalDataSource.getLastSearchResult().toEntity()
+    override suspend fun getSearchResult(): SearchResultExtendedEntity? {
+        val lastAuthorAndTitle = bookLocalDataSource.getLastAuthorAndTitle()
+        val bookList = bookLocalDataSource.getLastSearchResult()
+        return if (lastAuthorAndTitle != null && bookList.isNotEmpty()){
+            mapToEntity(bookList, lastAuthorAndTitle.author, lastAuthorAndTitle.title)
+        } else {
+            null
+        }
     }
 
     override suspend fun getLikedBook(): List<BookEntity> {
-        return bookLocalDataSource.getLikedBooks()
+        return bookLocalDataSource.getLikedBooks().likedBookDataObjectToEntity()
     }
 
-    private fun BookRemoteDataSource.BookResult.toBookEntity() : List<BookEntity> {
-        return try {
-            this.items.map {
-                BookEntity(
-                    title = it.volumeInfo.title,
-                    author = it.volumeInfo.authors.first(),
-                    description = it.volumeInfo.description,
-                    imageUrl = it.volumeInfo.imageLinks?.thumbnail
-                )
-            }
-        } catch (e: Exception){
-            emptyList()
+}
+
+
+private fun BookRemoteDataSource.BookResult.toBookEntity() : List<BookEntity> {
+    return try {
+        this.items.map {
+            BookEntity(
+                etag = it.etag,
+                title = it.volumeInfo.title,
+                author = it.volumeInfo.authors?.firstOrNull(),
+                description = it.volumeInfo.description,
+                imageUrl = it.volumeInfo.imageLinks?.thumbnail
+            )
         }
+    } catch (e: Exception){
+        emptyList()
     }
 }
 
-private fun SearchResultDataObject.toEntity(): SearchResultExtendedEntity {
+private fun List<LikedBookDataObject>.likedBookDataObjectToEntity(): List<BookEntity> {
+    return this.map {
+        BookEntity(
+            etag = it.etag,
+            title = it.title,
+            author = it.author,
+            description = it.description,
+            imageUrl = it.imageUrl
+        )
+    }
+}
+
+private fun BookRemoteDataSource.BookResult.toBookDataObject(): List<BookDataObject> {
+    return try {
+        this.items.map {
+            BookDataObject(
+                etag = it.etag,
+                title = it.volumeInfo.title,
+                author = it.volumeInfo.authors?.firstOrNull(),
+                description = it.volumeInfo.description,
+                imageUrl = it.volumeInfo.imageLinks?.thumbnail
+            )
+        }
+    } catch (e: Exception) {
+        emptyList()
+    }
+}
+
+private fun mapToEntity(bookList: List<BookDataObject>, author: String, title: String): SearchResultExtendedEntity {
     return SearchResultExtendedEntity(
-        list = this.bookList,
-        author = this.author,
-        title = this.title
+        list = bookList.toEntity(),
+        author = author,
+        title = title
     )
 }
+
+private fun  List<BookDataObject>.toEntity(): List<BookEntity> {
+    return this.map {
+        BookEntity(
+            etag = it.etag,
+            title = it.title,
+            author = it.author,
+            description = it.description,
+            imageUrl = it.imageUrl
+        )
+    }
+}
+

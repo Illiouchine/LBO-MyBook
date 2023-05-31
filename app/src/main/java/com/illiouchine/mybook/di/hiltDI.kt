@@ -1,10 +1,12 @@
 package com.illiouchine.mybook.di
 
+import android.content.Context
+import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.illiouchine.mybook.data.BookDataMapper
 import com.illiouchine.mybook.data.datasource.BookLocalDataSource
-import com.illiouchine.mybook.data.datasource.BookLocalDataSourceInMemory
 import com.illiouchine.mybook.data.datasource.BookRemoteDataSource
+import com.illiouchine.mybook.data.room.AppDatabase
 import com.illiouchine.mybook.feature.GetSearchUseCase
 import com.illiouchine.mybook.feature.GetSearchUseCaseImpl
 import com.illiouchine.mybook.feature.PerformSearchUseCase
@@ -12,6 +14,7 @@ import com.illiouchine.mybook.feature.PerformSearchUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -56,7 +59,9 @@ class BookDataModule {
 
     @Singleton
     @Provides
-    fun provideBookLocalDataSource(): BookLocalDataSource = BookLocalDataSourceInMemory()
+    fun provideBookLocalDataSource(
+        appDatabase: AppDatabase
+    ): BookLocalDataSource = appDatabase.bookDao()
 }
 
 @Module
@@ -81,3 +86,20 @@ object ApiModule {
             .build()
             .create(BookRemoteDataSource::class.java)
 }
+@Module
+@InstallIn(SingletonComponent::class)
+object DataBaseModule {
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
+        return Room
+            .databaseBuilder(
+                appContext,
+                AppDatabase::class.java,
+                "appDatabase"
+            )
+            .build()
+    }
+}
+

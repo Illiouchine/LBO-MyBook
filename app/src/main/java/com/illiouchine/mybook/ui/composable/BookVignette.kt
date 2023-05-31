@@ -60,9 +60,12 @@ fun BookVignette(
                             .fillMaxWidth()
                     ){
                         Text(text = book.title)
-                        Text(text = book.author)
-                        Text(text = book.description ?: "")
-
+                        book.author?.let{
+                            Text(text = it)
+                        }
+                        book.description?.let{
+                            Text(text = it)
+                        }
                     }
                 }
 
@@ -111,6 +114,7 @@ fun LikeIcon(
 @Composable
 fun PrevBookVignette() {
     BookVignette(book = BookWithLikedEntity(
+        etag = "etag",
         title = "Title",
         author = "Author",
         description = "Une super longue description",
@@ -124,6 +128,7 @@ fun PrevBookVignette() {
 @Composable
 fun PrevBookVignette2() {
     BookVignette(book = BookWithLikedEntity(
+        etag = "etag",
         title = "Title",
         author = "Author",
         description = "Une super longue description",
