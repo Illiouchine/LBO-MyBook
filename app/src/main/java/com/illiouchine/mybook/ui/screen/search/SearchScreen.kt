@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -39,44 +40,54 @@ fun SearchScreen(
     }
 
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Book store")
+        item {
+            Text("Book store")
+        }
 
         when (searchProgressState.searchProgress) {
             SearchContract.SearchState.SearchProgress.Idle -> {
-                SearchForm(
-                    lastSearchAuthor = "",
-                    lastSearchTitle = "",
-                    onSearchClick = { author, title ->
-                        onSearchClick(author, title)
-                    }
-                )
+                item {
+                    SearchForm(
+                        lastSearchAuthor = "",
+                        lastSearchTitle = "",
+                        onSearchClick = { author, title ->
+                            onSearchClick(author, title)
+                        }
+                    )
+                }
             }
             is SearchContract.SearchState.SearchProgress.IdleWithPreviousSearch -> {
-                SearchForm(
-                    lastSearchAuthor = searchProgressState.searchProgress.author,
-                    lastSearchTitle = searchProgressState.searchProgress.title,
-                    errorMessage = searchProgressState.searchProgress.error,
-                    onSearchClick = { author, title ->
-                        onSearchClick(author, title)
-                    }
-                )
+                item {
+                    SearchForm(
+                        lastSearchAuthor = searchProgressState.searchProgress.author,
+                        lastSearchTitle = searchProgressState.searchProgress.title,
+                        errorMessage = searchProgressState.searchProgress.error,
+                        onSearchClick = { author, title ->
+                            onSearchClick(author, title)
+                        }
+                    )
+                }
             }
             SearchContract.SearchState.SearchProgress.Loading -> {
-                CircularProgressIndicator()
+                item {
+                    CircularProgressIndicator()
+                }
             }
         }
 
-        Button(
-            onClick = { onMyLibraryClick() }
-        ) {
-            Text("My Library")
+        item {
+            Button(
+                onClick = { onMyLibraryClick() }
+            ) {
+                Text("My Library")
+            }
         }
     }
 }
@@ -91,35 +102,44 @@ fun SearchForm(
     var author by remember { mutableStateOf(TextFieldValue(lastSearchAuthor)) }
     var title by remember { mutableStateOf(TextFieldValue(lastSearchTitle)) }
 
-    TextField(
-        value = author,
-        label = { Text("Author") },
-        onValueChange = { newValue ->
-            author = newValue
-        }
-    )
-    TextField(
-        value = title,
-        label = { Text("Title") },
-        onValueChange = { newTitle ->
-            title = newTitle
-        }
-    )
-
-    errorMessage?.let {
-        Text(text = it, color = Color.Red)
-    }
-
-    Button(
-        enabled = (author.text.isNotEmpty() && title.text.isNotEmpty()),
-        onClick = { onSearchClick(author.text, title.text) },
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "search")
+        TextField(
+            value = author,
+            label = { Text("Author") },
+            onValueChange = { newValue ->
+                author = newValue
+            }
+        )
+        TextField(
+            value = title,
+            label = { Text("Title") },
+            onValueChange = { newTitle ->
+                title = newTitle
+            }
+        )
+
+        errorMessage?.let {
+            Text(text = it, color = Color.Red)
+        }
+
+        Button(
+            enabled = (author.text.isNotEmpty() && title.text.isNotEmpty()),
+            onClick = { onSearchClick(author.text, title.text) },
+        ) {
+            Text(text = "Search")
+        }
     }
 }
 
 @Preview
 @Composable
 fun SearchScreenPreview() {
-    SearchScreen()
+    SearchForm(
+        lastSearchAuthor = "herbert",
+        lastSearchTitle = "dune",
+        errorMessage = "No result",
+    )
 }
