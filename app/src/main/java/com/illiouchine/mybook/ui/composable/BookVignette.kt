@@ -98,14 +98,16 @@ fun BookVignette(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        TextButton(
-                            modifier = Modifier.padding(4.dp),
-                            onClick = { expandedState = !expandedState },
-                        ) {
-                            if (expandedState) {
-                                Text(text = "see less")
-                            } else {
-                                Text(text = "see more")
+                        if (!book.description.isNullOrEmpty()){
+                            TextButton(
+                                modifier = Modifier.padding(4.dp),
+                                onClick = { expandedState = !expandedState },
+                            ) {
+                                if (expandedState) {
+                                    Text(text = "see less")
+                                } else {
+                                    Text(text = "see more")
+                                }
                             }
                         }
                     }
