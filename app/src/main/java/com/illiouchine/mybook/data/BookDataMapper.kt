@@ -13,7 +13,7 @@ import javax.inject.Inject
 class BookDataMapper @Inject constructor(
     private val bookRemoteDataSource: BookRemoteDataSource,
     private val bookLocalDataSource: BookLocalDataSource
-): BookDataGateway {
+) : BookDataGateway {
 
     override suspend fun getBookByAuthorAndTitle(author: String, title: String): List<BookEntity> {
         val bookEntityList = bookRemoteDataSource.searchBook(author = author, title = title)
@@ -27,7 +27,7 @@ class BookDataMapper @Inject constructor(
     override suspend fun getSearchResult(): SearchResultExtendedEntity? {
         val lastAuthorAndTitle = bookLocalDataSource.getLastAuthorAndTitle()
         val bookList = bookLocalDataSource.getLastSearchResult()
-        return if (lastAuthorAndTitle != null && bookList.isNotEmpty()){
+        return if (lastAuthorAndTitle != null && bookList.isNotEmpty()) {
             mapToEntity(bookList, lastAuthorAndTitle.author, lastAuthorAndTitle.title)
         } else {
             null
@@ -68,7 +68,7 @@ private fun BookEntity.toDataObject(): LikedBookDataObject {
 }
 
 
-private fun BookRemoteDataSource.BookResult.toBookEntity() : List<BookEntity> {
+private fun BookRemoteDataSource.BookResult.toBookEntity(): List<BookEntity> {
     return try {
         this.items.map {
             BookEntity(
@@ -79,7 +79,7 @@ private fun BookRemoteDataSource.BookResult.toBookEntity() : List<BookEntity> {
                 imageUrl = it.volumeInfo.imageLinks?.thumbnail
             )
         }
-    } catch (e: Exception){
+    } catch (e: Exception) {
         emptyList()
     }
 }
@@ -112,7 +112,11 @@ private fun BookRemoteDataSource.BookResult.toBookDataObject(): List<BookDataObj
     }
 }
 
-private fun mapToEntity(bookList: List<BookDataObject>, author: String, title: String): SearchResultExtendedEntity {
+private fun mapToEntity(
+    bookList: List<BookDataObject>,
+    author: String,
+    title: String
+): SearchResultExtendedEntity {
     return SearchResultExtendedEntity(
         list = bookList.toEntity(),
         author = author,
@@ -120,7 +124,7 @@ private fun mapToEntity(bookList: List<BookDataObject>, author: String, title: S
     )
 }
 
-private fun  List<BookDataObject>.toEntity(): List<BookEntity> {
+private fun List<BookDataObject>.toEntity(): List<BookEntity> {
     return this.map {
         BookEntity(
             id = it.id,

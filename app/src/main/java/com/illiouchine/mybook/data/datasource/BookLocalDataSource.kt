@@ -14,16 +14,20 @@ interface BookLocalDataSource {
 
     @Insert
     suspend fun saveSearchResult(bookList: List<BookDataObject>)
+
     @Query("SELECT * FROM searched_book")
     suspend fun getLastSearchResult(): List<BookDataObject>
+
     @Query("DELETE FROM searched_book")
     suspend fun dropLastSearchResult()
+
     @Query("SELECT * FROM searched_book WHERE id = :bookId")
     suspend fun getSearchById(bookId: String): BookEntity?
 
 
     @Insert
     suspend fun saveLastAuthorAndTitle(authorAndTitle: LastAuthorAndTitle)
+
     @Query("DELETE FROM author_title")
     suspend fun dropLastAuthorAndTitle()
 
@@ -32,6 +36,7 @@ interface BookLocalDataSource {
 
     @Insert
     suspend fun saveLikedBook(book: LikedBookDataObject)
+
     @Delete
     suspend fun removeLikedBook(book: LikedBookDataObject)
 

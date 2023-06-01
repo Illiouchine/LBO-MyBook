@@ -56,7 +56,7 @@ class DetailViewModel @Inject constructor(
                 currentState: DetailContract.DetailState,
                 partialState: DetailContract.DetailPartialState
             ): DetailContract.DetailState {
-                return when(partialState){
+                return when (partialState) {
                     DetailContract.DetailPartialState.ClearEvent -> {
                         currentState.copy(
                             event = null
@@ -81,14 +81,14 @@ class DetailViewModel @Inject constructor(
     }
 
     override fun handleUserIntent(intent: Intent): Action {
-        return when(intent){
+        return when (intent) {
             Intent.EventHandled -> {
                 Action.ClearEvent
             }
             is Intent.LikeClicked -> {
-                if (intent.book.liked){
+                if (intent.book.liked) {
                     Action.RemoveBookToLiked(intent.book)
-                }else {
+                } else {
                     Action.AddBookToLiked(intent.book)
                 }
             }
@@ -96,7 +96,7 @@ class DetailViewModel @Inject constructor(
     }
 
     override suspend fun handleAction(action: DetailContract.DetailAction) {
-        when(action){
+        when (action) {
             is Action.AddBookToLiked -> {
                 likeUseCase(action.book.toBookEntity())
                 loadBookDetail()

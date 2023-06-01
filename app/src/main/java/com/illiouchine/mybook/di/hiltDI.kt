@@ -115,6 +115,7 @@ object ApiModule {
             .build()
             .create(BookRemoteDataSource::class.java)
 }
+
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseModule {

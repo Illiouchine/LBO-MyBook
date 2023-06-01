@@ -41,7 +41,7 @@ interface MyLibContract {
 
     sealed class MyLibPartialState : UiPartialState {
         object Loading : MyLibPartialState()
-        data class Loadded(val bookList: List<BookWithLikedEntity>, ) : MyLibPartialState()
+        data class Loadded(val bookList: List<BookWithLikedEntity>) : MyLibPartialState()
         data class GoToBookDetail(val book: BookWithLikedEntity) : MyLibPartialState()
         object ClearEvent : MyLibPartialState()
     }

@@ -68,40 +68,68 @@ fun MainScreen() {
                         }
                     )
                 }
-                composable("myLib"){
+                composable("myLib") {
                     val myLibViewModel = hiltViewModel<MyLibViewModel>()
                     val myLibState by myLibViewModel.uiState.collectAsState()
                     MyLibScreen(
                         myLibState = myLibState,
                         onEventHandled = { myLibViewModel.dispatchIntent(MyLibIntent.EventHandled) },
                         onNavigateToBookDetail = { book -> navController.navigate("book/${book.id}") },
-                        onLikeClicked = { book -> myLibViewModel.dispatchIntent(MyLibIntent.LikeClicked(book))},
-                        onBookClicked = { book -> myLibViewModel.dispatchIntent(MyLibIntent.BookTileClicked(book)) },
+                        onLikeClicked = { book ->
+                            myLibViewModel.dispatchIntent(
+                                MyLibIntent.LikeClicked(
+                                    book
+                                )
+                            )
+                        },
+                        onBookClicked = { book ->
+                            myLibViewModel.dispatchIntent(
+                                MyLibIntent.BookTileClicked(
+                                    book
+                                )
+                            )
+                        },
                         onRefresh = { myLibViewModel.dispatchIntent(MyLibIntent.Refresh) }
                     )
                 }
-                composable("searchResult"){
+                composable("searchResult") {
                     val resultViewModel = hiltViewModel<ResultViewModel>()
                     val resultState by resultViewModel.uiState.collectAsState()
                     ResultScreen(
                         resultState = resultState,
                         onEventHandled = { resultViewModel.dispatchIntent(ResultIntent.EventHandled) },
                         onNavigateToBookDetail = { book -> navController.navigate("book/${book.id}") },
-                        onLikeClicked = { book -> resultViewModel.dispatchIntent(ResultIntent.LikeClicked(book))},
-                        onBookClicked = { book -> resultViewModel.dispatchIntent(ResultIntent.BookTileClicked(book))},
+                        onLikeClicked = { book ->
+                            resultViewModel.dispatchIntent(
+                                ResultIntent.LikeClicked(
+                                    book
+                                )
+                            )
+                        },
+                        onBookClicked = { book ->
+                            resultViewModel.dispatchIntent(
+                                ResultIntent.BookTileClicked(
+                                    book
+                                )
+                            )
+                        },
                         onRefresh = { resultViewModel.dispatchIntent(ResultIntent.Refresh) }
                     )
                 }
                 composable(
-                    route="book/{id}",
+                    route = "book/{id}",
                     arguments = listOf(navArgument("id") { type = NavType.StringType })
-                ){
+                ) {
                     val detailViewModel = hiltViewModel<DetailViewModel>()
                     val detailState by detailViewModel.uiState.collectAsState()
                     DetailScreen(
-                        state  = detailState,
+                        state = detailState,
                         onEventHandled = { detailViewModel.dispatchIntent(DetailContract.DetailIntent.EventHandled) },
-                        onLikeClicked = { book: BookWithLikedEntity -> detailViewModel.dispatchIntent(DetailContract.DetailIntent.LikeClicked(book))},
+                        onLikeClicked = { book: BookWithLikedEntity ->
+                            detailViewModel.dispatchIntent(
+                                DetailContract.DetailIntent.LikeClicked(book)
+                            )
+                        },
                     )
                 }
             }

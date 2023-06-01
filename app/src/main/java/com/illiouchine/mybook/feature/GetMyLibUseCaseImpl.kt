@@ -13,10 +13,10 @@ class GetMyLibUseCaseImpl @Inject constructor(
     }
 }
 
-private fun  List<BookEntity>.toBookWithLikedEntity(): List<BookWithLikedEntity> {
+private fun List<BookEntity>.toBookWithLikedEntity(): List<BookWithLikedEntity> {
     return this.map {
         BookWithLikedEntity(
-            id= it.id,
+            id = it.id,
             title = it.title,
             author = it.author,
             description = it.description,

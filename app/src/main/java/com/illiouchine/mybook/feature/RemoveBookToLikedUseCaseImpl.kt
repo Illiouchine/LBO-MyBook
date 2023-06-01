@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class RemoveBookToLikedUseCaseImpl @Inject constructor(
     private val bookDataGateway: BookDataGateway
-): RemoveBookToLikedUseCase {
+) : RemoveBookToLikedUseCase {
     override suspend fun invoke(book: BookEntity) {
         bookDataGateway.unlikeBook(book)
     }

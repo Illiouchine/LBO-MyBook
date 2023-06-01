@@ -31,7 +31,7 @@ interface DetailContract {
 
     sealed class DetailPartialState : UiPartialState {
         object Loading : DetailPartialState()
-        data class Loadded(val book: BookWithLikedEntity ) : DetailPartialState()
+        data class Loadded(val book: BookWithLikedEntity) : DetailPartialState()
         object ClearEvent : DetailPartialState()
     }
 }

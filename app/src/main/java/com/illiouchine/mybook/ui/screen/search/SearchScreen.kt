@@ -1,7 +1,13 @@
 package com.illiouchine.mybook.ui.screen.search
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +53,7 @@ fun SearchScreen(
                 SearchForm(
                     lastSearchAuthor = "",
                     lastSearchTitle = "",
-                    onSearchClick= { author, title ->
+                    onSearchClick = { author, title ->
                         onSearchClick(author, title)
                     }
                 )
@@ -57,7 +63,7 @@ fun SearchScreen(
                     lastSearchAuthor = searchProgressState.searchProgress.author,
                     lastSearchTitle = searchProgressState.searchProgress.title,
                     errorMessage = searchProgressState.searchProgress.error,
-                    onSearchClick= { author, title ->
+                    onSearchClick = { author, title ->
                         onSearchClick(author, title)
                     }
                 )
@@ -100,7 +106,7 @@ fun SearchForm(
         }
     )
 
-    errorMessage?.let{
+    errorMessage?.let {
         Text(text = it, color = Color.Red)
     }
 

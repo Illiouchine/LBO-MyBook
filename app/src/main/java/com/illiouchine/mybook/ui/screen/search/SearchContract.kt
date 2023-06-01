@@ -6,13 +6,13 @@ import com.illiouchine.mybook.feature.datagateway.entities.BookEntity
 interface SearchContract {
 
     sealed class SearchIntent : UiIntent {
-        data class Search(val author : String, val title: String) : SearchIntent()
+        data class Search(val author: String, val title: String) : SearchIntent()
         object MyLibraryClicked : SearchIntent()
-        object EventHandled: SearchIntent()
+        object EventHandled : SearchIntent()
     }
 
     sealed class SearchAction : UiAction {
-        data class PerformSearch(val author : String, val title: String) : SearchAction()
+        data class PerformSearch(val author: String, val title: String) : SearchAction()
         object GoToMyLibrary : SearchAction()
         object ClearEvent : SearchAction()
     }
@@ -22,17 +22,19 @@ interface SearchContract {
         override val event: UiEvent?,
     ) : UiState {
         sealed class SearchProgress {
-            object Idle: SearchProgress()
+            object Idle : SearchProgress()
             data class IdleWithPreviousSearch(
                 val author: String,
                 val title: String,
                 val error: String? = null,
             ) : SearchProgress()
+
             object Loading : SearchProgress()
         }
+
         sealed class SearchEvent : UiEvent {
-            object GoToMyLibrary: SearchEvent()
-            data class GoToSearchResult(val bookList: List<BookEntity>): SearchEvent()
+            object GoToMyLibrary : SearchEvent()
+            data class GoToSearchResult(val bookList: List<BookEntity>) : SearchEvent()
         }
     }
 
@@ -44,11 +46,13 @@ interface SearchContract {
             val title: String,
             val error: String? = null,
         ) : SearchPartialState()
+
         data class GoToBookList(
             val author: String,
             val title: String,
             val bookList: List<BookEntity>
-            ) : SearchPartialState()
+        ) : SearchPartialState()
+
         object GoToMyLibrary : SearchPartialState()
         object ClearEvent : SearchPartialState()
     }

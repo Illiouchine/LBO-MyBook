@@ -50,6 +50,7 @@ interface ResultContract {
             val author: String,
             val title: String
         ) : ResultPartialState()
+
         data class GoToBookDetail(val book: BookWithLikedEntity) : ResultPartialState()
         object ClearEvent : ResultPartialState()
     }

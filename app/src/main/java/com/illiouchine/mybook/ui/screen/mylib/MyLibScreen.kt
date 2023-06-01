@@ -68,7 +68,7 @@ fun MyLibScreen(
                 items(myLibState.state.bookList) { book ->
                     BookVignette(
                         book = book,
-                        onBookClicked = { clickedBook->
+                        onBookClicked = { clickedBook ->
                             onBookClicked(clickedBook)
                         },
                         onLikeClicked = { likedBook ->

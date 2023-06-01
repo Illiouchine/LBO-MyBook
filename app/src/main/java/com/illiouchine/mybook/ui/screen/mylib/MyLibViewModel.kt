@@ -1,7 +1,5 @@
 package com.illiouchine.mybook.ui.screen.mylib
 
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.illiouchine.mvi.core.MviViewModel
 import com.illiouchine.mvi.core.Reducer
@@ -74,9 +72,9 @@ class MyLibViewModel @Inject constructor(
                 )
             }
             is MyLibContract.MyLibIntent.LikeClicked -> {
-                    MyLibContract.MyLibAction.RemoveBookToLiked(
-                        book = intent.book
-                    )
+                MyLibContract.MyLibAction.RemoveBookToLiked(
+                    book = intent.book
+                )
             }
             MyLibContract.MyLibIntent.EventHandled -> {
                 MyLibContract.MyLibAction.ClearEvent

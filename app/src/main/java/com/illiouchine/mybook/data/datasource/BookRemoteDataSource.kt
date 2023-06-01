@@ -12,10 +12,12 @@ interface BookRemoteDataSource {
         val totalItems: Int,
         val items: List<Book>
     )
+
     data class Book(
         val volumeInfo: VolumeInfo,
         val id: String
     )
+
     data class VolumeInfo(
         val title: String,
         val authors: List<String>?,
@@ -23,6 +25,7 @@ interface BookRemoteDataSource {
         val description: String?,
         val imageLinks: ImageLink?,
     )
+
     data class ImageLink(val thumbnail: String?)
 }
 

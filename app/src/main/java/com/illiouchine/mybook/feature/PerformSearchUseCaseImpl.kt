@@ -6,11 +6,11 @@ import javax.inject.Inject
 
 class PerformSearchUseCaseImpl @Inject constructor(
     private val bookDataGateway: BookDataGateway
-): PerformSearchUseCase {
+) : PerformSearchUseCase {
 
     override suspend fun invoke(author: String, title: String): SearchResultEntity {
-        val result = bookDataGateway.getBookByAuthorAndTitle(author = author, title= title)
-        return if (result.isEmpty()){
+        val result = bookDataGateway.getBookByAuthorAndTitle(author = author, title = title)
+        return if (result.isEmpty()) {
             SearchResultEntity.Error
         } else {
             SearchResultEntity.Result(

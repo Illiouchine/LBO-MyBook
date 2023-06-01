@@ -9,8 +9,8 @@ class GetBookByIdUseCaseImpl @Inject constructor(
     private val bookDataGateway: BookDataGateway
 ) : GetBookByIdUseCase {
     override suspend fun invoke(bookId: String): BookWithLikedEntity? {
-        val likedBook : BookEntity? = bookDataGateway.getLikedBookById(bookId)
-        if (likedBook != null){
+        val likedBook: BookEntity? = bookDataGateway.getLikedBookById(bookId)
+        if (likedBook != null) {
             return likedBook.toLikedBook(true)
         }
         val searchBook: BookEntity? = bookDataGateway.getSearchBookById(bookId)
