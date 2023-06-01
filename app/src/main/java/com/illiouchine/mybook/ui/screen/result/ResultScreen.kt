@@ -19,13 +19,14 @@ fun ResultScreen(
         event = null
     ),
     onEventHandled: () -> Unit = {},
-    onNavigateToBookDetail: () -> Unit = {},
+    onNavigateToBookDetail: (book: BookWithLikedEntity) -> Unit = {},
     onLikeClicked: (book: BookWithLikedEntity) -> Unit = {},
+    onBookClicked: (book: BookWithLikedEntity) -> Unit = {},
 ) {
     when (resultState.event) {
         is ResultContract.ResultState.ResultEvent.GoToBookDetail -> {
             onEventHandled()
-            onNavigateToBookDetail() // Todo pass book detail to nav arg
+            onNavigateToBookDetail(resultState.event.book)
         }
     }
 
@@ -35,16 +36,17 @@ fun ResultScreen(
             .padding(horizontal = 16.dp)
             .padding(bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-
     ) {
         when (resultState.searchResult) {
             is ResultContract.ResultState.SearchResult.Loadded -> {
                 items(resultState.searchResult.bookList) { book ->
                     BookVignette(
                         book = book,
-                        onBookClicked = { /* TODO() */},
-                        onLikeClicked = { book ->
-                            onLikeClicked(book)
+                        onBookClicked = { clickedBook ->
+                            onBookClicked(clickedBook)
+                        },
+                        onLikeClicked = { likedBook ->
+                            onLikeClicked(likedBook)
                         }
                     )
                 }

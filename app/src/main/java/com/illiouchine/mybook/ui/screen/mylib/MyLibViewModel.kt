@@ -21,7 +21,6 @@ class MyLibViewModel @Inject constructor(
         loadMyLib()
     }
 
-
     override fun createInitialState(): MyLibContract.MyLibState = MyLibContract.MyLibState(
         state = MyLibContract.MyLibState.MyLibBookState.Loading,
         event = null
@@ -40,7 +39,7 @@ class MyLibViewModel @Inject constructor(
                     is MyLibContract.MyLibPartialState.GoToBookDetail -> {
                         currentState.copy(
                             event = MyLibContract.MyLibState.MyLibEvent.GoToBookDetail(
-                                bookEntity = partialState.bookEntity
+                                book = partialState.book
                             )
                         )
                     }
@@ -66,7 +65,7 @@ class MyLibViewModel @Inject constructor(
         return when (intent) {
             is MyLibContract.MyLibIntent.BookTileClicked -> {
                 MyLibContract.MyLibAction.ShowBook(
-                    bookEntity = intent.bookEntity
+                    book = intent.book
                 )
             }
             is MyLibContract.MyLibIntent.LikeClicked -> {
@@ -74,19 +73,25 @@ class MyLibViewModel @Inject constructor(
                         book = intent.book
                     )
             }
+            MyLibContract.MyLibIntent.EventHandled -> {
+                MyLibContract.MyLibAction.ClearEvent
+            }
         }
     }
 
     override suspend fun handleAction(action: MyLibContract.MyLibAction) {
         when (action) {
             is MyLibContract.MyLibAction.ShowBook -> {
-                setPartialState { MyLibContract.MyLibPartialState.GoToBookDetail(bookEntity = action.bookEntity) }
+                setPartialState { MyLibContract.MyLibPartialState.GoToBookDetail(book = action.book) }
             }
             is MyLibContract.MyLibAction.RemoveBookToLiked -> {
                 viewModelScope.launch {
                     removeBookToLikedUseCase(action.book.toBookEntity())
                     loadMyLib()
                 }
+            }
+            MyLibContract.MyLibAction.ClearEvent -> {
+                setPartialState { MyLibContract.MyLibPartialState.ClearEvent }
             }
         }
     }

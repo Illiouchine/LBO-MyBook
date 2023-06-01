@@ -1,18 +1,21 @@
 package com.illiouchine.mybook.ui.screen.result
 
 import com.illiouchine.mvi.core.*
-import com.illiouchine.mybook.feature.datagateway.entities.BookEntity
 import com.illiouchine.mybook.feature.datagateway.entities.BookWithLikedEntity
 
 interface ResultContract {
 
     sealed class ResultIntent : UiIntent {
-        data class BookTileClicked(val bookEntity: BookEntity) : ResultIntent()
+        object EventHandled : ResultIntent()
+
+        data class BookTileClicked(val book: BookWithLikedEntity) : ResultIntent()
         data class LikeClicked(val book: BookWithLikedEntity) : ResultIntent()
     }
 
     sealed class ResultAction : UiAction {
-        data class ShowBook(val bookEntity: BookEntity) : ResultAction()
+        object ClearEvent : ResultAction()
+
+        data class ShowBook(val book: BookWithLikedEntity) : ResultAction()
         data class AddBookToLiked(val book: BookWithLikedEntity) : ResultAction()
         data class RemoveBookToLiked(val book: BookWithLikedEntity) : ResultAction()
     }
@@ -33,7 +36,7 @@ interface ResultContract {
 
         sealed class ResultEvent : UiEvent {
             data class GoToBookDetail(
-                val bookEntity: BookEntity
+                val book: BookWithLikedEntity
             ) : ResultEvent()
         }
     }
@@ -45,7 +48,7 @@ interface ResultContract {
             val author: String,
             val title: String
         ) : ResultPartialState()
-        data class GoToBookDetail(val bookEntity: BookEntity) : ResultPartialState()
+        data class GoToBookDetail(val book: BookWithLikedEntity) : ResultPartialState()
         object ClearEvent : ResultPartialState()
     }
 }

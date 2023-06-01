@@ -47,7 +47,7 @@ class ResultViewModel @Inject constructor(
                     is ResultContract.ResultPartialState.GoToBookDetail -> {
                         currentState.copy(
                             event = ResultContract.ResultState.ResultEvent.GoToBookDetail(
-                                bookEntity = partialState.bookEntity
+                                book = partialState.book
                             )
                         )
                     }
@@ -75,7 +75,7 @@ class ResultViewModel @Inject constructor(
         return when (intent) {
             is ResultContract.ResultIntent.BookTileClicked -> {
                 Action.ShowBook(
-                    bookEntity = intent.bookEntity
+                    book = intent.book
                 )
             }
             is ResultContract.ResultIntent.LikeClicked -> {
@@ -89,6 +89,9 @@ class ResultViewModel @Inject constructor(
                     )
                 }
             }
+            ResultContract.ResultIntent.EventHandled -> {
+                Action.ClearEvent
+            }
         }
     }
 
@@ -101,13 +104,16 @@ class ResultViewModel @Inject constructor(
                 }
             }
             is ResultContract.ResultAction.ShowBook -> {
-                setPartialState { PartialState.GoToBookDetail(bookEntity = action.bookEntity) }
+                setPartialState { PartialState.GoToBookDetail(book = action.book) }
             }
             is ResultContract.ResultAction.RemoveBookToLiked -> {
                 viewModelScope.launch {
                     removeBookToLikedUseCase(action.book.toBookEntity())
                     loadBookList()
                 }
+            }
+            ResultContract.ResultAction.ClearEvent -> {
+                setPartialState { PartialState.ClearEvent }
             }
         }
     }

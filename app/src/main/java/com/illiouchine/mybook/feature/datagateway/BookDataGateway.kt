@@ -9,5 +9,7 @@ interface BookDataGateway {
     suspend fun getLikedBook(): List<BookEntity>
     suspend fun likeBook(book: BookEntity)
     suspend fun unlikeBook(book: BookEntity)
+    suspend fun getLikedBookById(bookId: String): BookEntity?
+    suspend fun getSearchBookById(bookId: String): BookEntity?
 }
 

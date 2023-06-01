@@ -17,15 +17,16 @@ fun MyLibScreen(
     myLibState: MyLibContract.MyLibState = MyLibContract.MyLibState(
         state = MyLibContract.MyLibState.MyLibBookState.Loading,
         event = null
-),
-                    onEventHandled: () -> Unit = {},
-                    onNavigateToBookDetail: () -> Unit = {},
-                    onLikeClicked: (book: BookWithLikedEntity) -> Unit = {},
+    ),
+    onEventHandled: () -> Unit = {},
+    onNavigateToBookDetail: (book: BookWithLikedEntity) -> Unit = {},
+    onLikeClicked: (book: BookWithLikedEntity) -> Unit = {},
+    onBookClicked: (book: BookWithLikedEntity) -> Unit = {}
 ) {
     when (myLibState.event) {
         is MyLibContract.MyLibState.MyLibEvent.GoToBookDetail -> {
             onEventHandled()
-            onNavigateToBookDetail() // Todo pass book detail to nav arg
+            onNavigateToBookDetail(myLibState.event.book)
         }
     }
 
@@ -42,9 +43,11 @@ fun MyLibScreen(
                 items(myLibState.state.bookList) { book ->
                     BookVignette(
                         book = book,
-                        onBookClicked = { /* TODO() */},
-                        onLikeClicked = { book ->
-                            onLikeClicked(book)
+                        onBookClicked = { clickedBook->
+                            onBookClicked(clickedBook)
+                        },
+                        onLikeClicked = { likedBook ->
+                            onLikeClicked(likedBook)
                         }
                     )
                 }

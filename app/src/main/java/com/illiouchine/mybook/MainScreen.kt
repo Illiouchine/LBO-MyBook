@@ -8,18 +8,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.illiouchine.mybook.ui.screen.mylib.MyLibContract
+import androidx.navigation.navArgument
+import com.illiouchine.mybook.feature.datagateway.entities.BookWithLikedEntity
+import com.illiouchine.mybook.ui.screen.detail.DetailContract
+import com.illiouchine.mybook.ui.screen.detail.DetailScreen
+import com.illiouchine.mybook.ui.screen.detail.DetailViewModel
+import com.illiouchine.mybook.ui.screen.mylib.MyLibContract.MyLibIntent
 import com.illiouchine.mybook.ui.screen.mylib.MyLibScreen
 import com.illiouchine.mybook.ui.screen.mylib.MyLibViewModel
-import com.illiouchine.mybook.ui.screen.result.ResultContract
+import com.illiouchine.mybook.ui.screen.result.ResultContract.ResultIntent
 import com.illiouchine.mybook.ui.screen.result.ResultScreen
 import com.illiouchine.mybook.ui.screen.result.ResultViewModel
+import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchIntent
 import com.illiouchine.mybook.ui.screen.search.SearchScreen
 import com.illiouchine.mybook.ui.screen.search.SearchViewModel
-import com.illiouchine.mybook.ui.screen.search.SearchContract.SearchIntent as Intent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
@@ -43,18 +49,16 @@ fun MainScreen() {
                         searchProgressState = searchState,
                         onSearchClick = { author, title ->
                             searchViewModel.dispatchIntent(
-                                Intent.Search(author = author, title = title)
+                                SearchIntent.Search(author = author, title = title)
                             )
                         },
                         onMyLibraryClick = {
                             searchViewModel.dispatchIntent(
-                                Intent.MyLibraryClicked
+                                SearchIntent.MyLibraryClicked
                             )
                         },
                         onEventHandled = {
-                            searchViewModel.dispatchIntent(
-                                Intent.EventHandled
-                            )
+                            searchViewModel.dispatchIntent(SearchIntent.EventHandled)
                         },
                         onNavigateToMyLibrary = {
                             navController.navigate("myLib")
@@ -69,9 +73,10 @@ fun MainScreen() {
                     val myLibState by myLibViewModel.uiState.collectAsState()
                     MyLibScreen(
                         myLibState = myLibState,
-                        onEventHandled = {},
-                        onNavigateToBookDetail = {},
-                        onLikeClicked = { book -> myLibViewModel.dispatchIntent(MyLibContract.MyLibIntent.LikeClicked(book))}
+                        onEventHandled = { myLibViewModel.dispatchIntent(MyLibIntent.EventHandled) },
+                        onNavigateToBookDetail = { book -> navController.navigate("book/${book.id}") },
+                        onLikeClicked = { book -> myLibViewModel.dispatchIntent(MyLibIntent.LikeClicked(book))},
+                        onBookClicked = { book -> myLibViewModel.dispatchIntent(MyLibIntent.BookTileClicked(book)) }
                     )
                 }
                 composable("searchResult"){
@@ -79,9 +84,22 @@ fun MainScreen() {
                     val resultState by resultViewModel.uiState.collectAsState()
                     ResultScreen(
                         resultState = resultState,
-                        onEventHandled = {},
-                        onNavigateToBookDetail = {},
-                        onLikeClicked = { book -> resultViewModel.dispatchIntent(ResultContract.ResultIntent.LikeClicked(book))}
+                        onEventHandled = { resultViewModel.dispatchIntent(ResultIntent.EventHandled) },
+                        onNavigateToBookDetail = { book -> navController.navigate("book/${book.id}") },
+                        onLikeClicked = { book -> resultViewModel.dispatchIntent(ResultIntent.LikeClicked(book))},
+                        onBookClicked = { book -> resultViewModel.dispatchIntent(ResultIntent.BookTileClicked(book))}
+                    )
+                }
+                composable(
+                    route="book/{id}",
+                    arguments = listOf(navArgument("id") { type = NavType.StringType })
+                ){
+                    val detailViewModel = hiltViewModel<DetailViewModel>()
+                    val detailState by detailViewModel.uiState.collectAsState()
+                    DetailScreen(
+                        state  = detailState,
+                        onEventHandled = { detailViewModel.dispatchIntent(DetailContract.DetailIntent.EventHandled) },
+                        onLikeClicked = { book: BookWithLikedEntity -> detailViewModel.dispatchIntent(DetailContract.DetailIntent.LikeClicked(book))},
                     )
                 }
             }

@@ -47,6 +47,14 @@ class BookDataMapper @Inject constructor(
         bookLocalDataSource.removeLikedBook(book.toDataObject())
     }
 
+    override suspend fun getLikedBookById(bookId: String): BookEntity? {
+        return bookLocalDataSource.getLikedBookById(bookId)
+    }
+
+    override suspend fun getSearchBookById(bookId: String): BookEntity? {
+        return bookLocalDataSource.getSearchById(bookId)
+    }
+
 }
 
 private fun BookEntity.toDataObject(): LikedBookDataObject {
