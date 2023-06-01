@@ -25,6 +25,14 @@ class UseCaseModule {
 
     @Singleton
     @Provides
+    fun provideMyLibUseCase(
+        bookDataMapper: BookDataMapper
+    ): GetMyLibUseCase {
+        return GetMyLibUseCaseImpl(bookDataMapper)
+    }
+
+    @Singleton
+    @Provides
     fun provideLikeUseCase(
         bookDataMapper: BookDataMapper
     ): AddBookToLikedUseCase {
