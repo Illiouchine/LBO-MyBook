@@ -8,6 +8,7 @@ interface MyLibContract {
 
     sealed class MyLibIntent : UiIntent {
         object EventHandled : MyLibIntent()
+        object Refresh : MyLibIntent()
 
         data class BookTileClicked(val book: BookWithLikedEntity) : MyLibIntent()
         data class LikeClicked(val book: BookWithLikedEntity) : MyLibIntent()
@@ -15,6 +16,7 @@ interface MyLibContract {
 
     sealed class MyLibAction : UiAction {
         object ClearEvent : MyLibAction()
+        object Refresh : MyLibAction()
 
         data class ShowBook(val book: BookWithLikedEntity) : MyLibAction()
         data class RemoveBookToLiked(val book: BookWithLikedEntity) : MyLibAction()

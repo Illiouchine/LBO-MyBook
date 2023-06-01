@@ -1,5 +1,7 @@
 package com.illiouchine.mybook.ui.screen.mylib
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.illiouchine.mvi.core.MviViewModel
 import com.illiouchine.mvi.core.Reducer
@@ -63,6 +65,9 @@ class MyLibViewModel @Inject constructor(
 
     override fun handleUserIntent(intent: MyLibContract.MyLibIntent): MyLibContract.MyLibAction {
         return when (intent) {
+            MyLibContract.MyLibIntent.Refresh -> {
+                MyLibContract.MyLibAction.Refresh
+            }
             is MyLibContract.MyLibIntent.BookTileClicked -> {
                 MyLibContract.MyLibAction.ShowBook(
                     book = intent.book
@@ -81,6 +86,9 @@ class MyLibViewModel @Inject constructor(
 
     override suspend fun handleAction(action: MyLibContract.MyLibAction) {
         when (action) {
+            MyLibContract.MyLibAction.Refresh -> {
+                loadMyLib()
+            }
             is MyLibContract.MyLibAction.ShowBook -> {
                 setPartialState { MyLibContract.MyLibPartialState.GoToBookDetail(book = action.book) }
             }
