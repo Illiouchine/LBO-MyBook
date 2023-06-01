@@ -1,7 +1,6 @@
 package com.illiouchine.mybook.feature
 
 import com.illiouchine.mybook.feature.datagateway.BookDataGateway
-import com.illiouchine.mybook.feature.datagateway.entities.BookEntity
 import com.illiouchine.mybook.feature.datagateway.entities.BookWithLikedEntity
 import com.illiouchine.mybook.feature.datagateway.entities.SearchResultWithLikedBookEntity
 import javax.inject.Inject
@@ -12,25 +11,21 @@ class GetSearchUseCaseImpl @Inject constructor(
 
     override suspend fun invoke(): SearchResultWithLikedBookEntity {
 
-        val searchResult = gateway.getSearchResult()
         val likedBook = gateway.getLikedBook()
 
+        val searchResult = gateway.getSearchResult()
+
         val searchResultWithLiked = searchResult?.list?.map { searchedBook ->
+
+            val liked = likedBook.any { searchedBook == it }
+
             BookWithLikedEntity(
-                etag = searchedBook.etag,
+                id = searchedBook.id,
                 title = searchedBook.title,
                 author = searchedBook.author,
                 description = searchedBook.description,
                 imageUrl = searchedBook.imageUrl,
-                liked = likedBook.contains(
-                    BookEntity(
-                        etag = searchedBook.etag,
-                        title = searchedBook.title,
-                        author = searchedBook.author,
-                        description = searchedBook.description,
-                        imageUrl = searchedBook.imageUrl
-                    )
-                )
+                liked = liked
             )
         }
 

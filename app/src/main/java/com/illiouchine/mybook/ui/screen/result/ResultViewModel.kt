@@ -3,7 +3,11 @@ package com.illiouchine.mybook.ui.screen.result
 import androidx.lifecycle.viewModelScope
 import com.illiouchine.mvi.core.MviViewModel
 import com.illiouchine.mvi.core.Reducer
+import com.illiouchine.mybook.feature.AddBookToLikedUseCase
 import com.illiouchine.mybook.feature.GetSearchUseCase
+import com.illiouchine.mybook.feature.RemoveBookToLikedUseCase
+import com.illiouchine.mybook.feature.datagateway.entities.BookEntity
+import com.illiouchine.mybook.feature.datagateway.entities.BookWithLikedEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,21 +19,13 @@ import com.illiouchine.mybook.ui.screen.result.ResultContract.ResultState as Sta
 
 @HiltViewModel
 class ResultViewModel @Inject constructor(
-    private val getSearchUseCase: GetSearchUseCase
+    private val getSearchUseCase: GetSearchUseCase,
+    private val addBookToLikedUseCase: AddBookToLikedUseCase,
+    private val removeBookToLikedUseCase: RemoveBookToLikedUseCase,
 ) : MviViewModel<Intent, Action, PartialState, State>() {
 
     init {
-        viewModelScope.launch {
-            val result = getSearchUseCase()
-            setPartialState {
-                PartialState.Loadded(
-                    bookList = result.list,
-                    author = result.author,
-                    title = result.title
-                )
-            }
-
-        }
+        loadBookList()
     }
 
 
@@ -83,9 +79,15 @@ class ResultViewModel @Inject constructor(
                 )
             }
             is ResultContract.ResultIntent.LikeClicked -> {
-                Action.AddBookToLiked(
-                    bookEntity = intent.bookEntity
-                )
+                if (intent.book.liked) {
+                    Action.RemoveBookToLiked(
+                        book = intent.book
+                    )
+                } else {
+                    Action.AddBookToLiked(
+                        book = intent.book
+                    )
+                }
             }
         }
     }
@@ -93,11 +95,43 @@ class ResultViewModel @Inject constructor(
     override suspend fun handleAction(action: ResultContract.ResultAction) {
         when (action) {
             is ResultContract.ResultAction.AddBookToLiked -> {
-                // Todo()
+                viewModelScope.launch {
+                    addBookToLikedUseCase(action.book.toBookEntity())
+                    loadBookList()
+                }
             }
             is ResultContract.ResultAction.ShowBook -> {
                 setPartialState { PartialState.GoToBookDetail(bookEntity = action.bookEntity) }
             }
+            is ResultContract.ResultAction.RemoveBookToLiked -> {
+                viewModelScope.launch {
+                    removeBookToLikedUseCase(action.book.toBookEntity())
+                    loadBookList()
+                }
+            }
         }
     }
+
+    private fun loadBookList() {
+        viewModelScope.launch {
+            val result = getSearchUseCase()
+            setPartialState {
+                PartialState.Loadded(
+                    bookList = result.list,
+                    author = result.author,
+                    title = result.title
+                )
+            }
+        }
+    }
+}
+
+private fun BookWithLikedEntity.toBookEntity(): BookEntity {
+    return BookEntity(
+        id = this.id,
+        title = this.title,
+        author = this.author,
+        description = this.description,
+        imageUrl = this.imageUrl
+    )
 }

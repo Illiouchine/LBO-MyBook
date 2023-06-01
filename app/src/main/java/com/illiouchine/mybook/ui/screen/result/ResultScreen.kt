@@ -9,6 +9,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.illiouchine.mybook.feature.datagateway.entities.BookWithLikedEntity
 import com.illiouchine.mybook.ui.composable.BookVignette
 
 @Composable
@@ -19,6 +20,7 @@ fun ResultScreen(
     ),
     onEventHandled: () -> Unit = {},
     onNavigateToBookDetail: () -> Unit = {},
+    onLikeClicked: (book: BookWithLikedEntity) -> Unit = {},
 ) {
     when (resultState.event) {
         is ResultContract.ResultState.ResultEvent.GoToBookDetail -> {
@@ -38,7 +40,13 @@ fun ResultScreen(
         when (resultState.searchResult) {
             is ResultContract.ResultState.SearchResult.Loadded -> {
                 items(resultState.searchResult.bookList) { book ->
-                    BookVignette(book = book)
+                    BookVignette(
+                        book = book,
+                        onBookClicked = { /* TODO() */},
+                        onLikeClicked = { book ->
+                            onLikeClicked(book)
+                        }
+                    )
                 }
             }
             ResultContract.ResultState.SearchResult.Loading -> {

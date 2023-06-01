@@ -35,9 +35,28 @@ class BookDataMapper @Inject constructor(
     }
 
     override suspend fun getLikedBook(): List<BookEntity> {
-        return bookLocalDataSource.getLikedBooks().likedBookDataObjectToEntity()
+        val bookList = bookLocalDataSource.getLikedBooks().likedBookDataObjectToEntity()
+        return bookList
     }
 
+    override suspend fun likeBook(book: BookEntity) {
+        bookLocalDataSource.saveLikedBook(book.toDataObject())
+    }
+
+    override suspend fun unlikeBook(book: BookEntity) {
+        bookLocalDataSource.removeLikedBook(book.toDataObject())
+    }
+
+}
+
+private fun BookEntity.toDataObject(): LikedBookDataObject {
+    return LikedBookDataObject(
+        id = this.id,
+        title = this.title,
+        author = this.author,
+        description = this.description,
+        imageUrl = this.imageUrl
+    )
 }
 
 
@@ -45,7 +64,7 @@ private fun BookRemoteDataSource.BookResult.toBookEntity() : List<BookEntity> {
     return try {
         this.items.map {
             BookEntity(
-                etag = it.etag,
+                id = it.id,
                 title = it.volumeInfo.title,
                 author = it.volumeInfo.authors?.firstOrNull(),
                 description = it.volumeInfo.description,
@@ -60,7 +79,7 @@ private fun BookRemoteDataSource.BookResult.toBookEntity() : List<BookEntity> {
 private fun List<LikedBookDataObject>.likedBookDataObjectToEntity(): List<BookEntity> {
     return this.map {
         BookEntity(
-            etag = it.etag,
+            id = it.id,
             title = it.title,
             author = it.author,
             description = it.description,
@@ -73,7 +92,7 @@ private fun BookRemoteDataSource.BookResult.toBookDataObject(): List<BookDataObj
     return try {
         this.items.map {
             BookDataObject(
-                etag = it.etag,
+                id = it.id,
                 title = it.volumeInfo.title,
                 author = it.volumeInfo.authors?.firstOrNull(),
                 description = it.volumeInfo.description,
@@ -96,7 +115,7 @@ private fun mapToEntity(bookList: List<BookDataObject>, author: String, title: S
 private fun  List<BookDataObject>.toEntity(): List<BookEntity> {
     return this.map {
         BookEntity(
-            etag = it.etag,
+            id = it.id,
             title = it.title,
             author = it.author,
             description = it.description,

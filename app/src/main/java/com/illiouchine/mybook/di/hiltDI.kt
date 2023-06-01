@@ -7,10 +7,7 @@ import com.illiouchine.mybook.data.BookDataMapper
 import com.illiouchine.mybook.data.datasource.BookLocalDataSource
 import com.illiouchine.mybook.data.datasource.BookRemoteDataSource
 import com.illiouchine.mybook.data.room.AppDatabase
-import com.illiouchine.mybook.feature.GetSearchUseCase
-import com.illiouchine.mybook.feature.GetSearchUseCaseImpl
-import com.illiouchine.mybook.feature.PerformSearchUseCase
-import com.illiouchine.mybook.feature.PerformSearchUseCaseImpl
+import com.illiouchine.mybook.feature.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +22,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class UseCaseModule {
+
+    @Singleton
+    @Provides
+    fun provideLikeUseCase(
+        bookDataMapper: BookDataMapper
+    ): AddBookToLikedUseCase {
+        return AddBookToLikedUseCaseImpl(bookDataMapper)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUnlikeUseCase(
+        bookDataMapper: BookDataMapper
+    ): RemoveBookToLikedUseCase {
+        return RemoveBookToLikedUseCaseImpl(bookDataMapper)
+    }
 
     @Singleton
     @Provides

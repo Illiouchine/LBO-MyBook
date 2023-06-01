@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 )
 data class BookDataObject(
     @PrimaryKey
-    val etag: String,
+    val id: String,
     val title: String,
     val author: String?,
     val description: String?,

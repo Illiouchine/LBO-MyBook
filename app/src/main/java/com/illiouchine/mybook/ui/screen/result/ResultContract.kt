@@ -8,12 +8,13 @@ interface ResultContract {
 
     sealed class ResultIntent : UiIntent {
         data class BookTileClicked(val bookEntity: BookEntity) : ResultIntent()
-        data class LikeClicked(val bookEntity: BookEntity) : ResultIntent()
+        data class LikeClicked(val book: BookWithLikedEntity) : ResultIntent()
     }
 
     sealed class ResultAction : UiAction {
         data class ShowBook(val bookEntity: BookEntity) : ResultAction()
-        data class AddBookToLiked(val bookEntity: BookEntity) : ResultAction()
+        data class AddBookToLiked(val book: BookWithLikedEntity) : ResultAction()
+        data class RemoveBookToLiked(val book: BookWithLikedEntity) : ResultAction()
     }
 
     data class ResultState(

@@ -114,7 +114,7 @@ fun LikeIcon(
 @Composable
 fun PrevBookVignette() {
     BookVignette(book = BookWithLikedEntity(
-        etag = "etag",
+        id = "id",
         title = "Title",
         author = "Author",
         description = "Une super longue description",
@@ -128,7 +128,7 @@ fun PrevBookVignette() {
 @Composable
 fun PrevBookVignette2() {
     BookVignette(book = BookWithLikedEntity(
-        etag = "etag",
+        id = "id",
         title = "Title",
         author = "Author",
         description = "Une super longue description",

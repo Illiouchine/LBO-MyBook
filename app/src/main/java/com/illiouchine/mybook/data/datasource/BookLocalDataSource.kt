@@ -26,6 +26,11 @@ interface BookLocalDataSource {
     @Query("SELECT * FROM author_title")
     suspend fun getLastAuthorAndTitle(): LastAuthorAndTitle?
 
+    @Insert
+    suspend fun saveLikedBook(book: LikedBookDataObject)
+    @Delete
+    suspend fun removeLikedBook(book: LikedBookDataObject)
+
     @Query("SELECT * FROM liked_book")
     suspend fun getLikedBooks(): List<LikedBookDataObject>
 

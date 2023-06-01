@@ -14,7 +14,7 @@ interface BookRemoteDataSource {
     )
     data class Book(
         val volumeInfo: VolumeInfo,
-        val etag: String
+        val id: String
     )
     data class VolumeInfo(
         val title: String,

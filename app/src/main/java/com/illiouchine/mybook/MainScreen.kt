@@ -11,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.illiouchine.mybook.ui.screen.result.ResultContract
 import com.illiouchine.mybook.ui.screen.result.ResultScreen
 import com.illiouchine.mybook.ui.screen.result.ResultViewModel
 import com.illiouchine.mybook.ui.screen.search.SearchScreen
@@ -69,7 +70,8 @@ fun MainScreen() {
                     ResultScreen(
                         resultState = resultState,
                         onEventHandled = {},
-                        onNavigateToBookDetail = {}
+                        onNavigateToBookDetail = {},
+                        onLikeClicked = { book -> resultViewModel.dispatchIntent(ResultContract.ResultIntent.LikeClicked(book))}
                     )
                 }
             }
