@@ -92,11 +92,17 @@ class ResultViewModel @Inject constructor(
             ResultContract.ResultIntent.EventHandled -> {
                 Action.ClearEvent
             }
+            ResultContract.ResultIntent.Refresh -> {
+                Action.Refresh
+            }
         }
     }
 
     override suspend fun handleAction(action: ResultContract.ResultAction) {
         when (action) {
+            Action.Refresh -> {
+                loadBookList()
+            }
             is ResultContract.ResultAction.AddBookToLiked -> {
                 viewModelScope.launch {
                     addBookToLikedUseCase(action.book.toBookEntity())

@@ -88,7 +88,8 @@ fun MainScreen() {
                         onEventHandled = { resultViewModel.dispatchIntent(ResultIntent.EventHandled) },
                         onNavigateToBookDetail = { book -> navController.navigate("book/${book.id}") },
                         onLikeClicked = { book -> resultViewModel.dispatchIntent(ResultIntent.LikeClicked(book))},
-                        onBookClicked = { book -> resultViewModel.dispatchIntent(ResultIntent.BookTileClicked(book))}
+                        onBookClicked = { book -> resultViewModel.dispatchIntent(ResultIntent.BookTileClicked(book))},
+                        onRefresh = { resultViewModel.dispatchIntent(ResultIntent.Refresh) }
                     )
                 }
                 composable(
